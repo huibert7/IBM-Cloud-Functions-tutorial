@@ -13,6 +13,11 @@ struct Input: Codable {
 struct Output: Codable {
     let decimalValue: Int
 }
+enum RomanNumberError: Error {
+    case illegalValue
+}
+
+
 func main(param: Input, completion: (Output?, Error?) -> Void) -> Void {
 
     let table:[String] = ["MMM","MM","M","CM","DCCC","DCC","DC","D","CD","CCC","CC","C","XC","LXXX","LXX","LX","L","XL","XXX","XX","X","IX","VIII","VII","VI","V","IV","III","II","I"]
@@ -22,6 +27,8 @@ func main(param: Input, completion: (Output?, Error?) -> Void) -> Void {
     var calcValue:Int = 0
     var tempRomanNumber:String? = param.romanNumber
     
+    print("param.romanNumber = \(param.romanNumber)")
+    
     if tempRomanNumber != nil {
         while tempRomanNumber!.count > 0 && i < 30 {
             if tempRomanNumber!.starts(with: table[i]){
@@ -30,8 +37,18 @@ func main(param: Input, completion: (Output?, Error?) -> Void) -> Void {
             }
             i += 1
         }
+        
+        if (tempRomanNumber!.count > 0) {
+            print("illegalValue 1")
+            completion(nil, RomanNumberError.illegalValue)
+        }
+        else {
+            let result = Output(decimalValue: calcValue)
+            completion(result, nil)
+        }
     }
-
-    let result = Output(decimalValue: calcValue)
-    completion(result, nil)
+    else {
+            print("illegalValue 2")
+        completion(nil, RomanNumberError.illegalValue)
+    }
 }
